@@ -2,7 +2,9 @@ import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 
-const mongoUrl = process.env.MONGO_URL || 'mongodb://localhost/books';
+const mongoUrl =
+  process.env.MONGO_URL ||
+  'mongodb+srv://oskarnordin1:jM8K612mFaTZNNeX@cluster0.isyvn5c.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
 mongoose.connect(mongoUrl);
 mongoose.Promise = Promise;
 
@@ -57,13 +59,13 @@ if (process.env.RESET_DATABASE) {
     await new Book({ title: 'The Lord of the Rings', author: tolkien }).save();
     await new Book({ title: 'The Hobbit', author: tolkien }).save();
   };
-  seedDatabase;
+  seedDatabase();
 }
 
 // Defines the port the app will run on. Defaults to 8080, but can be overridden
 // when starting the server. Example command to overwrite PORT env variable value:
 // PORT=9000 npm start
-const port = process.env.PORT || 27017;
+const port = process.env.PORT || 8080;
 const app = express();
 
 // Add middlewares to enable cors and json body parsing
@@ -79,12 +81,13 @@ app.use((req, res, next) => {
 });
 
 // Start defining your routes here
-app.get('/', (req, res) => {
-  res.send('Hello Technigo!');
+app.get('/author', async (req, res) => {
+  const authors = await Author.find();
+  res.json(authors);
 });
 
 app.get('/authors', async (req, res) => {
-  const author = await Author.find();
+  const authors = await Author.find();
   res.json(authors);
 });
 
